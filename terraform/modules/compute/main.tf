@@ -25,6 +25,8 @@ resource "azurerm_linux_virtual_machine" "main" {
     version   = "latest"
   }
 
+  custom_data = base64encode(file("${path.module}/cloud-init.yml"))
+
   tags = {
     project_name = var.project_name
   }
