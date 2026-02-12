@@ -1,0 +1,13 @@
+# Azure
+resource_group_name = "YOUR_RESOURCE_NAME"
+subscription_id     = "YOUR_SUBSCRIPTION_ID"
+key_vault_name      = "YOUR_KEY_VALUT_NAME"
+
+# Project
+project_name     = "YOUR_PROJECT_NAME"
+vm_size          = "YOUR_VM_SIZE"
+address_space    = ["10.0.0.0/16"]
+address_prefixes = ["10.0.0.0/28"]
+
+# Other
+allowed_ip  = "YOUR_ALLOWED_IP"
