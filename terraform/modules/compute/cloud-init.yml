@@ -73,5 +73,5 @@ runcmd:
   - systemctl enable docker
   - systemctl start docker
   - cd /monitoring
-  - docker-compose -f up -d
+  - docker-compose up -d
 
