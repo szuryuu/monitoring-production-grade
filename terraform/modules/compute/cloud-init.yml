@@ -4,13 +4,13 @@ package_upgrade: true
 
 packages:
   - docker.io
-  - docker-compose-plugin
+  - docker-compose
 
 bootcmd:
-  - mkdir -p /monitoring
+  - mkdir -p monitoring
 
 write_files:
-  - path: /monitoing/docker-compose.yml
+  - path: monitoring/docker-compose.yml
     content: |
       volumes:
         prometheus_data: {}
@@ -58,7 +58,7 @@ write_files:
           networks:
             - monitoring
           restart: unless-stopped
-  - path: /monitoring/prometheus.yml
+  - path: monitoring/prometheus.yml
     content: |
       global:
         scrape_interval: 15s
@@ -72,6 +72,6 @@ write_files:
 runcmd:
   - systemctl enable docker
   - systemctl start docker
-  - cd /monitoring
+  - cd monitoring
   - docker-compose up -d
 
