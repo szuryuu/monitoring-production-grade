@@ -1,1 +1,0 @@
-# Kurang Lebih
