@@ -83,7 +83,7 @@ write_files:
             - targets: ['victoria-metrics:8428']
 
       remote_write:
-        - url: http://victoria-metrics:8248/api/v1/write
+        - url: http://victoria-metrics:8428/api/v1/write
 
 runcmd:
   - systemctl enable docker
