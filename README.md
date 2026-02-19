@@ -23,7 +23,7 @@ A server monitoring implementation at the production level
 
 ## Architecture
 
-![Architecture](https://raw.githubusercontent.com/szuryuu/monitoring-production-grade/main/docs/assets/monitoring-architecture.png)
+![Architecture](https://raw.githubusercontent.com/szuryuu/monitoring-production-grade/main/docs/assets/monitoring-architecture2.png)
 *(See [Architecture Docs](./docs/architecture.md) for details)*
 
 ## Tech Stack
