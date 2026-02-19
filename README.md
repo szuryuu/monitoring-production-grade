@@ -1,3 +1,4 @@
+<!--
 # Monitoring Production Grade
 
 A server monitoring implementation at the production level
@@ -18,10 +19,12 @@ A server monitoring implementation at the production level
 
 -   **Low-Latency Query Performance**  
     Grafana retrieves data directly from VictoriaMetrics, which is designed for super-fast performance. The result? When you open the dashboard, the graphs appear instantly (no loading time), even with large amounts of data.
+-->
 
 ## Architecture
 
 ![Architecture](https://raw.githubusercontent.com/szuryuu/monitoring-production-grade/main/docs/assets/monitoring-architecture.png)
+*(See [Architecture Docs](./docs/architecture.md) for details)*
 
 ## Tech Stack
 
