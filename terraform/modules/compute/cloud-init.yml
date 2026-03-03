@@ -3,24 +3,20 @@ package_update: true
 package_upgrade: true
 
 packages:
-  - docker.io
-  - docker-compose
-
-bootcmd:
-  - mkdir -p /monitoring
+  - ca-certificates
+  - curl
+  - gnupg
 
 write_files:
-  - path: /monitoring/docker-compose.yml
+  - path: /home/adminuser/monitoring/docker-compose.yml
     content: |
       volumes:
         victoria_metrics_data: {}
         prometheus_data: {}
         grafana_data: {}
-
       networks:
         monitoring:
           driver: bridge
-
       services:
         victoria-metrics:
           image: victoriametrics/victoria-metrics:latest
@@ -28,8 +24,9 @@ write_files:
             - "8428:8428"
           volumes:
             - victoria_metrics_data:/victoria-metrics
+          networks:
+            - monitoring
           restart: unless-stopped
-
         prometheus:
           image: prom/prometheus:latest
           container_name: prometheus
@@ -43,7 +40,6 @@ write_files:
           networks:
             - monitoring
           restart: unless-stopped
-
         node-exporter:
           image: prom/node-exporter:latest
           container_name: node-exporter
@@ -52,7 +48,6 @@ write_files:
           networks:
             - monitoring
           restart: unless-stopped
-
         grafana:
           image: grafana/grafana:latest
           container_name: grafana
@@ -68,12 +63,11 @@ write_files:
             - monitoring
           restart: unless-stopped
 
-  - path: /monitoring/prometheus.yml
+  - path: /home/adminuser/monitoring/prometheus.yml
     content: |
       global:
         scrape_interval: 15s
         evaluation_interval: 15s
-
       scrape_configs:
         - job_name: 'node-exporter'
           static_configs:
@@ -81,13 +75,23 @@ write_files:
         - job_name: 'victoria-metrics'
           static_configs:
             - targets: ['victoria-metrics:8428']
-
       remote_write:
         - url: http://victoria-metrics:8428/api/v1/write
 
 runcmd:
+  # Install Docker Engine
+  - install -m 0755 -d /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  - chmod a+r /etc/apt/keyrings/docker.asc
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" | tee /etc/apt/sources.list.d/docker.list
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+  # Ownership
+  - usermod -aG docker adminuser
+  - chown -R adminuser:adminuser /home/adminuser/monitoring
+
+  # Start
   - systemctl enable docker
   - systemctl start docker
-  - cd /monitoring
-  - docker-compose up -d
-
+  - cd /home/adminuser/monitoring && docker compose up -d
