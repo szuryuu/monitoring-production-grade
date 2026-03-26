@@ -6,6 +6,7 @@ packages:
   - ca-certificates
   - curl
   - gnupg
+  - make
 
 write_files:
   - path: /home/adminuser/monitoring/docker-compose.yml
@@ -89,7 +90,7 @@ runcmd:
 
   # Ownership
   - usermod -aG docker adminuser
-  - chown -R adminuser:adminuser /home/adminuser/monitoring
+  - chown -R adminuser:adminuser /home/adminuser
 
   # Start
   - systemctl enable docker
