@@ -1,0 +1,48 @@
+groups:
+  - name: infrastructure
+    rules:
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 60
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU usage above 80% on {{ $labels.instance }}"
+
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 < 15
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk space below 15% on {{ $labels.instance }}"
+
+  - name: services
+    rules:
+      - alert: PrometheusDown
+        expr: up{job="prometheus"} == 0 OR absent(up{job="prometheus"})
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Prometheus is down on {{ $labels.instance }}"
+
+  - name: exporters
+    rules:
+      - alert: NodeExporterDown
+        expr: up{job="node-exporter"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node Exporter is down on {{ $labels.instance }}"
+
+  - name: memory
+    rules:
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 60
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Memory usage above 80% on {{ $labels.instance }}"

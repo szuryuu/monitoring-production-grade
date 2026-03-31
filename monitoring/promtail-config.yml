@@ -1,0 +1,36 @@
+server:
+  http_listen_port: 9080
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: ${LOKI_URL}/loki/api/v1/push
+    basic_auth:
+      username: ${LOKI_USERNAME}
+      password: ${LOKI_PASSWORD}
+
+scrape_configs:
+  - job_name: docker
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+    relabel_configs:
+      - source_labels: ["__meta_docker_container_name"]
+        regex: "/(.*)"
+        target_label: container
+        replacement: "$1"
+      - source_labels: ["__meta_docker_container_name"]
+        regex: "/(.*)"
+        target_label: app
+        replacement: "$1"
+      - source_labels: ["__meta_docker_container_log_stream"]
+        target_label: stream
+
+  - job_name: syslog
+    static_configs:
+      - targets: [localhost]
+        labels:
+          job: syslog
+          host: mopogra-vm
+          __path__: /var/log/syslog
